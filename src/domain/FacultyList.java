@@ -47,23 +47,9 @@ public class FacultyList
 	 * @param position
 	 *          the unique position id of the faculty member to be deleted
 	 */
-	public void deleteRecord()
+	public void deleteRecord(int index)
 	{
-		for (int i = 0; i < faculty.size(); i++)
-		{
-			System.out.println(faculty.get(i).getName());
-		}
-	}
-
-	/**
-	 * Method recovers the ArrayList when the user uploads a CSV file with faculty
-	 * information.
-	 * @param filename
-	 *          the CSV file with faculty information
-	 */
-	public void recoverDB(File filename)
-	{
-
+		faculty.remove(index);
 	}
 
 	/**
@@ -79,11 +65,43 @@ public class FacultyList
 	/**
 	 * Method searches the ArrayList for records according to search criteria and
 	 * returns a list of matching records.
+	 * @param sabbaticalYear 
+	 * @param evalYear 
+	 * @param promotionYear 
 	 * @return list of faculty records matching search criteria
 	 */
-	public ArrayList<FacultyMember> searchRecords()
+	public ArrayList<FacultyMember> searchRecords(FacultyMember fm, String promotionYear, String evalYear, String sabbaticalYear)
 	{
-		return null;
+		ArrayList<FacultyMember> searchResults = new ArrayList<FacultyMember>();
+		
+		for(FacultyMember f : faculty)
+		{	
+			if (f.getName().equalsIgnoreCase(fm.getName()))
+			{
+				searchResults.add(f);
+			}
+			else if (f.getCollege().equals(fm.getCollege()))
+			{
+				searchResults.add(f);
+			}
+			else if (f.getDepartment().equals(fm.getDepartment()))
+			{
+				searchResults.add(f);
+			}
+			else if (f.getRank().getCurrentRank().equals(fm.getRank().getCurrentRank()))
+			{
+				searchResults.add(f);
+			}
+			else if (f.getPromotion().getYearOfPromotions().contains(promotionYear))
+			{
+				searchResults.add(f);
+			}
+			else if (f.getEvaluation().getYearOfEvaluations().contains(evalYear))
+			{
+				searchResults.add(f);
+			}
+		}
+		return searchResults;
 	}
 
 	/**

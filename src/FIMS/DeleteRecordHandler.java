@@ -10,15 +10,13 @@ import gui.GUI;
 public class DeleteRecordHandler
 {
 	/**
-	 * Delete a record. Obtain a unique key to find in datastore.
+	 * Delete a record according to selected index.
 	 * 
 	 * @param frame
 	 */
 	public void delete(GUI frame, FacultyList fl)
 	{
-		int selectedPerson1 = frame.list.getSelectedIndex();
-		// String selectedPersonName = frame.names[selectedPerson1];
-
-		// db.delete(selectedPersonName);
+		int selectedPerson = frame.list.getSelectedIndex();
+		fl.deleteRecord(selectedPerson);
 	}
 }

@@ -221,7 +221,6 @@ public class FacultyMember
 	 */
 	public void setEvaluationYear(String yearOfEvaluation)
 	{
-		System.out.println("IN FM - YOE: " + yearOfEvaluation);
 		this.evaluation.addYearOfEvaluation(yearOfEvaluation);
 	}
 

@@ -44,7 +44,6 @@ public class WriteObjects
 				
 				FacultyMember fm = new FacultyMember();
 				fm = fl.getRecord(rowNum);
-				System.out.println(rowNum);
 				
 				int currCell = 0;
 				myCell = myRow.createCell(currCell++);

@@ -67,6 +67,11 @@ import java.awt.event.WindowEvent;
  */
 public class GUI extends JFrame
 {
+	private static final long serialVersionUID = 1L;
+	
+	/*
+	 * These are the handlers for data processing
+	 */
 	static AddRecordHandler arh = new AddRecordHandler();
 	static EditRecordHandler erh = new EditRecordHandler();
 	static DeleteRecordHandler drh = new DeleteRecordHandler();
@@ -75,7 +80,6 @@ public class GUI extends JFrame
 	static ViewOneRecordHandler vorh = new ViewOneRecordHandler();
 
 	static FacultyList fl = new FacultyList();
-	// static ReadObjects ro = new ReadObjects();
 
 	private JPanel contentPane;
 
@@ -85,20 +89,25 @@ public class GUI extends JFrame
 	JPanel panel_menu;
 	public final JPanel panel_content;
 
-	JButton button;
-	JButton btnMenuSearch;
-	JButton btnGenerateReport;
-	JButton btnAddRecord;
-	static JButton btnViewAll;
+	static JButton btnMenu_home;
+	static JButton btnMenu_Search;
+	static JButton btnMenu_GenerateReport;
+	static JButton btnMenu_Add;
+	static JButton btnMenu_ViewAll;
+	
 	static JButton btnBackToList;
-	JButton btnEditRecord;
-	static JButton btnView;
-	JButton btnEdit;
-	static JButton btnDelete;
-	static JButton btnSearch;
-	JButton btnGenerate;
-	static JButton btnAdd;
-	JButton btnSubmit_edit;
+	static JButton btnEditRecord;
+	
+	static JButton btnViewAll_View;
+	static JButton btnViewAll_Edit;
+	static JButton btnViewAll_Delete;
+	
+	static JButton btnSubmit_Search;
+	static JButton btnSubmit_Generate;
+	static JButton btnSubmit_Add;
+	static JButton btnSubmit_edit;
+	
+	static JButton btnRecordPromotion;
 
 	public JRadioButton rdbtnMale;
 	public JRadioButton rdbtnFemale;
@@ -183,12 +192,23 @@ public class GUI extends JFrame
 					final GUI frame = new GUI();
 					frame.setVisible(true);
 
+					/*
+					 * Listeners
+					 */
 					addRecord_Listener(frame);
 					deleteRecord_Listener(frame);
 					searchForRecord_Listener(frame);
 					viewAllRecords_Listener(frame);
 					viewOneRecord_Listener(frame);
+					
 					back_Listener(frame);
+					
+					menuHome_Listener(frame);
+					menuAdd_Listener(frame);
+					menuGenerate_Listener(frame);
+					menuSearch_Listener(frame);
+					
+					recordPromotion_Listener(frame);
 				}
 				catch (Exception e)
 				{
@@ -203,6 +223,9 @@ public class GUI extends JFrame
 	 */
 	public GUI()
 	{
+		/*
+		 * On window closing, write the contents of List to file
+		 */
 		addWindowListener(new WindowAdapter()
 		{
 			@Override
@@ -212,13 +235,15 @@ public class GUI extends JFrame
 			}
 		});
 
+		/*
+		 * Start by reading the data into objects
+		 */
 		try
 		{
 			fl = ReadObjects.readObjects();
 		}
 		catch (Exception e1)
 		{
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -235,38 +260,38 @@ public class GUI extends JFrame
 		contentPane.add(panel_menu);
 		panel_menu.setLayout(null);
 
-		button = new JButton("Home");
-		button.setFont(new Font("Arial", Font.PLAIN, 11));
-		button.setIcon(new ImageIcon(
+		btnMenu_home = new JButton("Home");
+		btnMenu_home.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnMenu_home.setIcon(new ImageIcon(
 				"C:\\Users\\Owner\\Desktop\\mimiGlyphs\\mimiGlyphs\\png\\6.png"));
-		button.setBounds(10, 5, 120, 25);
-		panel_menu.add(button);
+		btnMenu_home.setBounds(10, 5, 120, 25);
+		panel_menu.add(btnMenu_home);
 
-		btnMenuSearch = new JButton("Search");
-		btnMenuSearch.setBounds(10, 123, 120, 25);
-		btnMenuSearch.setIcon(new ImageIcon(
+		btnMenu_Search = new JButton("Search");
+		btnMenu_Search.setBounds(10, 123, 120, 25);
+		btnMenu_Search.setIcon(new ImageIcon(
 				"C:\\Users\\Owner\\Desktop\\mimiGlyphs\\mimiGlyphs\\png\\7.png"));
-		panel_menu.add(btnMenuSearch);
+		panel_menu.add(btnMenu_Search);
 
-		btnGenerateReport = new JButton("Generate Report");
-		btnGenerateReport.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnGenerateReport.setBounds(10, 65, 120, 25);
-		panel_menu.add(btnGenerateReport);
+		btnMenu_GenerateReport = new JButton("Generate Report");
+		btnMenu_GenerateReport.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnMenu_GenerateReport.setBounds(10, 65, 120, 25);
+		panel_menu.add(btnMenu_GenerateReport);
 
 		JLabel label = new JLabel("");
 		label.setBounds(128, 99, 0, 0);
 		panel_menu.add(label);
 
-		btnAddRecord = new JButton("Add Record");
-		btnAddRecord.setBounds(10, 35, 120, 25);
-		btnAddRecord.setFont(new Font("Arial", Font.PLAIN, 11));
-		panel_menu.add(btnAddRecord);
-		btnAddRecord.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnMenu_Add = new JButton("Add Record");
+		btnMenu_Add.setBounds(10, 35, 120, 25);
+		btnMenu_Add.setFont(new Font("Arial", Font.PLAIN, 11));
+		panel_menu.add(btnMenu_Add);
+		btnMenu_Add.setFont(new Font("Arial", Font.PLAIN, 11));
 
-		btnViewAll = new JButton("View All Records");
-		btnViewAll.setFont(new Font("Arial", Font.PLAIN, 11));
-		btnViewAll.setBounds(10, 95, 120, 25);
-		panel_menu.add(btnViewAll);
+		btnMenu_ViewAll = new JButton("View All Records");
+		btnMenu_ViewAll.setFont(new Font("Arial", Font.PLAIN, 11));
+		btnMenu_ViewAll.setBounds(10, 95, 120, 25);
+		panel_menu.add(btnMenu_ViewAll);
 
 		// CREATE "CARDS"
 		// -- HOME
@@ -285,9 +310,9 @@ public class GUI extends JFrame
 
 		// -- ADD
 		final JPanel content_add = new JPanel();
-		btnAdd = new JButton("Add");
-		btnAdd.setBounds(770, 375, 89, 23);
-		content_add.add(btnAdd);
+		btnSubmit_Add = new JButton("Add");
+		btnSubmit_Add.setBounds(770, 375, 89, 23);
+		content_add.add(btnSubmit_Add);
 		content_add.setLayout(null);
 		JLabel lblName = new JLabel("Name");
 		lblName.setBounds(10, 15, 73, 14);
@@ -337,8 +362,8 @@ public class GUI extends JFrame
 		comboBox_rank.setBounds(100, 115, 208, 20);
 		content_add.add(comboBox_rank);
 		comboBox_rank.setModel(new DefaultComboBoxModel<String>(new String[] {
-				"Select", "Lecturer", "Instructor", "Assistant Professor",
-				"Associate Professor", "Professor" }));
+				"Select", "Lec", "Instr", "Asst",
+				"Assoc", "Prof" }));
 
 		JLabel lblAppointment = new JLabel("Appointment");
 		lblAppointment.setBounds(11, 168, 73, 14);
@@ -600,7 +625,7 @@ public class GUI extends JFrame
 		tab_promo_toprof.setBounds(300, 171, 143, 14);
 		tab_promo.add(tab_promo_toprof);
 
-		JButton btnRecordPromotion = new JButton("Record Promotion");
+		btnRecordPromotion = new JButton("Record Promotion");
 		btnRecordPromotion.setBounds(10, 243, 198, 23);
 		tab_promo.add(btnRecordPromotion);
 
@@ -659,29 +684,29 @@ public class GUI extends JFrame
 		list.setCellRenderer(new MyCellRenderer());
 		scrollPane.setViewportView(list);
 
-		btnView = new JButton("View");
-		btnView.setIcon(new ImageIcon(
+		btnViewAll_View = new JButton("View");
+		btnViewAll_View.setIcon(new ImageIcon(
 				"C:\\Users\\Owner\\Desktop\\mimiGlyphs\\mimiGlyphs\\png\\12.png"));
-		btnView.setBounds(236, 375, 89, 23);
-		content_view_all.add(btnView);
+		btnViewAll_View.setBounds(236, 375, 89, 23);
+		content_view_all.add(btnViewAll_View);
 
-		btnEdit = new JButton("Edit");
-		btnEdit.setIcon(new ImageIcon(
+		btnViewAll_Edit = new JButton("Edit");
+		btnViewAll_Edit.setIcon(new ImageIcon(
 				"C:\\Users\\Owner\\Desktop\\mimiGlyphs\\mimiGlyphs\\png\\39.png"));
-		btnEdit.setBounds(369, 375, 89, 23);
-		content_view_all.add(btnEdit);
+		btnViewAll_Edit.setBounds(369, 375, 89, 23);
+		content_view_all.add(btnViewAll_Edit);
 
-		btnDelete = new JButton("Delete");
-		btnDelete.addActionListener(new ActionListener()
+		btnViewAll_Delete = new JButton("Delete");
+		btnViewAll_Delete.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 			}
 		});
-		btnDelete.setIcon(new ImageIcon(
+		btnViewAll_Delete.setIcon(new ImageIcon(
 				"C:\\Users\\Owner\\Desktop\\mimiGlyphs\\mimiGlyphs\\png\\51.png"));
-		btnDelete.setBounds(509, 375, 107, 23);
-		content_view_all.add(btnDelete);
+		btnViewAll_Delete.setBounds(509, 375, 107, 23);
+		content_view_all.add(btnViewAll_Delete);
 
 		// -- SEARCH
 		final JPanel content_search = new JPanel();
@@ -693,8 +718,8 @@ public class GUI extends JFrame
 		content_search.add(searchpanel);
 		searchpanel.setLayout(null);
 
-		comboBox_search_college = new JComboBox();
-		comboBox_search_college.setModel(new DefaultComboBoxModel(new String[] {
+		comboBox_search_college = new JComboBox<String>();
+		comboBox_search_college.setModel(new DefaultComboBoxModel<String>(new String[] {
 				"Select College", "ABS", "BUS", "EDUC", "HHS", "SET",
 				"Pre-Professional Programs" }));
 		comboBox_search_college.setBounds(120, 60, 203, 20);
@@ -712,15 +737,15 @@ public class GUI extends JFrame
 		rdbtnEvalsSearch.setBounds(19, 149, 95, 23);
 		searchpanel.add(rdbtnEvalsSearch);
 
-		comboBox_search_rank = new JComboBox();
-		comboBox_search_rank.setModel(new DefaultComboBoxModel(new String[] {
-				"Select Rank", "Lecturer", "Instructor", "Assistant Professor",
-				"Associate Professor", "Full Professor" }));
+		comboBox_search_rank = new JComboBox<String>();
+		comboBox_search_rank.setModel(new DefaultComboBoxModel<String>(new String[] {
+				"Select Rank", "Lec", "Instr", "Asst",
+				"Assoc", "Prof" }));
 		comboBox_search_rank.setBounds(120, 120, 203, 20);
 		searchpanel.add(comboBox_search_rank);
 
-		comboBox_search_eval = new JComboBox();
-		comboBox_search_eval.setModel(new DefaultComboBoxModel(new String[] {
+		comboBox_search_eval = new JComboBox<String>();
+		comboBox_search_eval.setModel(new DefaultComboBoxModel<String>(new String[] {
 				"All", "Fall", "Winter" }));
 		comboBox_search_eval.setBounds(120, 150, 71, 20);
 		searchpanel.add(comboBox_search_eval);
@@ -729,8 +754,8 @@ public class GUI extends JFrame
 		rdbtnPromoSearch.setBounds(19, 179, 95, 23);
 		searchpanel.add(rdbtnPromoSearch);
 
-		comboBox_search_promo = new JComboBox();
-		comboBox_search_promo.setModel(new DefaultComboBoxModel(new String[] {
+		comboBox_search_promo = new JComboBox<String>();
+		comboBox_search_promo.setModel(new DefaultComboBoxModel<String>(new String[] {
 				"All", "Fall", "Winter" }));
 		comboBox_search_promo.setBounds(120, 180, 71, 20);
 		searchpanel.add(comboBox_search_promo);
@@ -739,17 +764,17 @@ public class GUI extends JFrame
 		rdbtnSabbaticalSearch.setBounds(19, 209, 95, 23);
 		searchpanel.add(rdbtnSabbaticalSearch);
 
-		comboBox_search_sab = new JComboBox();
-		comboBox_search_sab.setModel(new DefaultComboBoxModel(new String[] { "All",
+		comboBox_search_sab = new JComboBox<String>();
+		comboBox_search_sab.setModel(new DefaultComboBoxModel<String>(new String[] { "All",
 				"Fall", "Winter" }));
 		comboBox_search_sab.setBounds(120, 210, 71, 20);
 		searchpanel.add(comboBox_search_sab);
 
-		btnSearch = new JButton("Search");
-		btnSearch.setBounds(332, 289, 89, 23);
-		searchpanel.add(btnSearch);
+		btnSubmit_Search = new JButton("Search");
+		btnSubmit_Search.setBounds(332, 289, 89, 23);
+		searchpanel.add(btnSubmit_Search);
 
-		comboBox_search_dept = new JComboBox();
+		comboBox_search_dept = new JComboBox<String>();
 		comboBox_search_dept.setEnabled(false);
 		comboBox_search_dept.setBounds(120, 90, 203, 20);
 		searchpanel.add(comboBox_search_dept);
@@ -797,8 +822,8 @@ public class GUI extends JFrame
 
 		JComboBox comboBox_generate_rank = new JComboBox();
 		comboBox_generate_rank.setModel(new DefaultComboBoxModel(new String[] {
-				"Select Rank", "Lecturer", "Instructor", "Assistant Professor",
-				"Associate Professor", "Full Professor" }));
+				"Select Rank", "Lec", "Instr", "Asst",
+				"Assoc", "Prof" }));
 		comboBox_generate_rank.setBounds(120, 86, 203, 20);
 		panel.add(comboBox_generate_rank);
 
@@ -828,11 +853,11 @@ public class GUI extends JFrame
 		comboBox_generate_sab.setBounds(120, 176, 71, 20);
 		panel.add(comboBox_generate_sab);
 
-		btnGenerate = new JButton("Generate");
-		btnGenerate.setBounds(331, 291, 89, 23);
-		panel.add(btnGenerate);
+		btnSubmit_Generate = new JButton("Generate");
+		btnSubmit_Generate.setBounds(331, 291, 89, 23);
+		panel.add(btnSubmit_Generate);
 
-		final JComboBox comboBox_generate_dept = new JComboBox();
+		final JComboBox comboBox_generate_dept = new JComboBox<String>();
 		comboBox_generate_dept.setEnabled(false);
 		comboBox_generate_dept.setBounds(120, 56, 203, 20);
 		panel.add(comboBox_generate_dept);
@@ -896,8 +921,8 @@ public class GUI extends JFrame
 		comboBox_rank_edit.setBounds(100, 115, 208, 20);
 		content_edit.add(comboBox_rank_edit);
 		comboBox_rank_edit.setModel(new DefaultComboBoxModel(new String[] {
-				"Select", "Lecturer", "Instructor", "Assistant Professor",
-				"Associate Professor", "Professor" }));
+				"Select", "Lec", "Instr", "Asst",
+				"Assoc", "Prof" }));
 
 		JLabel lblAppointment_edit = new JLabel("Appointment");
 		lblAppointment_edit.setBounds(10, 168, 73, 14);
@@ -958,8 +983,8 @@ public class GUI extends JFrame
 
 		comboBox_currentRank = new JComboBox();
 		comboBox_currentRank.setModel(new DefaultComboBoxModel(new String[] {
-				"Select", "Lecturer", "Instructor", "Assistant Professor",
-				"Associate Professor", "Professor" }));
+				"Select", "Lec", "Instr", "Asst",
+				"Assoc", "Prof" }));
 
 		comboBox_currentRank.setBounds(470, 115, 208, 20);
 		content_edit.add(comboBox_currentRank);
@@ -1197,84 +1222,13 @@ public class GUI extends JFrame
 				}
 			}
 		});
-
-		button.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				cl.show(panel_content, "Home");
-			}
-		});
-
-		btnAddRecord.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent evt)
-			{
-				cl.show(panel_content, "Add New Record");
-			}
-		});
-
-		btnGenerateReport.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				cl.show(panel_content, "Generate Reports");
-			}
-		});
-
-		btnEdit.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent arg0)
-			{
-				selectedPerson = list.getSelectedIndex();
-				cl.show(panel_content, "Edit Record");
-
-				textField_name_edit.setText(fl.getRecord(selectedPerson).getName());
-				comboBox_college_edit.setSelectedItem(fl.getRecord(selectedPerson)
-						.getCollege());
-				comboBox_dept_edit.setSelectedItem(fl.getRecord(selectedPerson)
-						.getDepartment());
-
-				if (String.valueOf(fl.getRecord(selectedPerson).getGender())
-						.equals("F"))
-					rdbtnFemale_edit.setSelected(true);
-				else
-					rdbtnMale_edit.setSelected(true);
-				// comboBox_rank_edit.setSelectedItem(rank[selectedPerson]);
-
-				// comboBox_month_edit
-				// textField_year_edit
-				// comboBox_degree_edit
-				// txtInstitution_edit
-				// textArea_comments_edit
-				// textField_expCred_edit
-				// comboBox_currentRank
-			}
-		});
-
-		btnMenuSearch.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				selectedPerson = list.getSelectedIndex();
-				cl.show(panel_content, "Search");
-			}
-		});
-
-		btnRecordPromotion.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				JComponent prompt = null;
-
-				final JComponent[] inputs = new JComponent[] {
-						new JLabel("Please enter year of promotion"), prompt };
-				String yearOfPromo = JOptionPane.showInputDialog(null, inputs,
-						"Record Promotion", JOptionPane.PLAIN_MESSAGE);
-			}
-		});
 	}
 
+	/**
+	 * Method to add items to the view all screen
+	 * @param frame
+	 * @param fl
+	 */
 	public static void addElements(final GUI frame, FacultyList fl)
 	{
 		// first number is number of rows, second is number of columns
@@ -1291,6 +1245,28 @@ public class GUI extends JFrame
 		frame.list.setListData(columnData);
 	}
 
+	/**
+	 * Method to add search results to the view all screen
+	 * @param frame
+	 * @param fl
+	 */
+	public static void addElements(final GUI frame, ArrayList<FacultyMember> fl)
+	{
+		// first number is number of rows, second is number of columns
+		String[][] columnData = new String[fl.size()][4];
+		if (fl.get(0) != null)
+		{
+			for (int i = 0; i < fl.size(); i++)
+			{
+				columnData[i][0] = fl.get(i).getName();
+				columnData[i][1] = fl.get(i).getDepartment();
+				columnData[i][2] = fl.get(i).getCollege();
+				columnData[i][3] = fl.get(i).getRank().getCurrentRank();
+			}
+			frame.list.setListData(columnData);
+		}
+	}
+	
 	static class MyCellRenderer extends JPanel implements ListCellRenderer
 	{
 		JLabel left, middle, right, rightright;
@@ -1350,18 +1326,115 @@ public class GUI extends JFrame
 			return this;
 		}
 	}
-
+	
+	/**
+	 * Displays the home screen
+	 * @param frame
+	 */
+	public static void menuHome_Listener(final GUI frame)
+	{
+		btnMenu_home.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				cl.show(frame.panel_content, "Home");
+			}
+		});
+	}
+	
+	/**
+	 * Displays the add faculty member screen
+	 * @param frame
+	 */
+	public static void menuAdd_Listener(final GUI frame)
+	{
+		btnMenu_Add.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent evt)
+			{
+				cl.show(frame.panel_content, "Add New Record");
+			}
+		});
+	}
+	
+	/**
+	 * Displays the screen that contains all of the records
+	 * 
+	 * @param frame
+	 */
+	public static void viewAllRecords_Listener(final GUI frame)
+	{
+		btnMenu_ViewAll.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				addElements(frame, fl);
+				cl.show(frame.panel_content, "View All Records");
+			}
+		});
+	}
+	
+	/**
+	 * Displays the search screen.
+	 * @param frame
+	 */
+	public static void menuSearch_Listener(final GUI frame)
+	{
+		btnMenu_Search.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				cl.show(frame.panel_content, "Search");
+			}
+		});
+	}
+	
+	/**
+	 * Displays the generate report screen
+	 * @param frame
+	 */
+	public static void menuGenerate_Listener(final GUI frame)
+	{
+		btnMenu_GenerateReport.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				cl.show(frame.panel_content, "Generate Reports");
+			}
+		});
+	}
+	
 	/**
 	 * Create listener to detect when the search for record button is pressed
+	 * Transfers to the search for record handler
 	 * @param frame
 	 */
 	public static void searchForRecord_Listener(final GUI frame)
 	{
-		btnSearch.addActionListener(new ActionListener()
+		btnSubmit_Search.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
-				srh.search(frame, fl);
+				ArrayList<FacultyMember> results = new ArrayList<FacultyMember>();
+				results = srh.search(frame, fl);
+				if (!results.isEmpty())
+				{
+					frame.list.clearSelection();
+					addElements(frame, results);
+					cl.show(frame.panel_content, "View All Records");
+				}
+				else
+				{
+					cl.show(frame.panel_content, "Search");
+					
+					JComponent prompt = null;
+					final JComponent[] inputs = new JComponent[] {
+							new JLabel(
+									"ERROR: NO RECORD FOUND."),
+							prompt };
+					JOptionPane.showMessageDialog(null,
+							inputs, "NO RECORD FOUND", JOptionPane.PLAIN_MESSAGE);
+				}
 			}
 		});
 	}
@@ -1374,12 +1447,19 @@ public class GUI extends JFrame
 	 */
 	public static void deleteRecord_Listener(final GUI frame)
 	{
-		btnDelete.addActionListener(new ActionListener()
+		btnViewAll_Delete.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				// confirmation?
-				drh.delete(frame, fl);
+				String message = "DELETE THIS RECORD? ";
+        String title = "DELETE CONFIRMATION";
+        int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION)
+        {
+        	drh.delete(frame, fl);
+        	addElements(frame, fl);
+  				cl.show(frame.panel_content, "View All Records");
+        }
 			}
 		});
 	}
@@ -1393,12 +1473,12 @@ public class GUI extends JFrame
 	 */
 	public static void addRecord_Listener(final GUI frame)
 	{
-		btnAdd.addActionListener(new ActionListener()
+		btnSubmit_Add.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				// error checking??
-				if (frame.textField_name.getText().isEmpty())
+				while (frame.textField_name.getText().isEmpty())
 				{
 					JComponent prompt = null;
 
@@ -1417,36 +1497,17 @@ public class GUI extends JFrame
 	}
 
 	/**
-	 * Create listener to detect when the view all records button is pressed
-	 * Shows all of the records
-	 * 
-	 * @param frame
-	 */
-	public static void viewAllRecords_Listener(final GUI frame)
-	{
-		btnViewAll.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				addElements(frame, fl);
-				cl.show(frame.panel_content, "View All Records");
-			}
-		});
-	}
-
-	/**
 	 * Creates the listener to detect if the view one record button was pressed
 	 * Displays the information for ONE faculty memeber
 	 * @param frame
 	 */
 	public static void viewOneRecord_Listener(final GUI frame)
 	{
-		btnView.addActionListener(new ActionListener()
+		btnViewAll_View.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent arg0)
 			{
 				selectedPerson = frame.list.getSelectedIndex();
-				System.out.println("Index of selected person : " + selectedPerson);
 				vorh.viewOne(frame, selectedPerson, fl);
 				cl.show(frame.panel_content, "View Record");
 			}
@@ -1455,7 +1516,7 @@ public class GUI extends JFrame
 
 	/**
 	 * Creates the listener to detect if the back button was pressed
-	 * Takes back to the view all records screen
+	 * Takes back to the view all records screen.
 	 * @param frame
 	 */
 	public static void back_Listener(final GUI frame)
@@ -1466,6 +1527,106 @@ public class GUI extends JFrame
 			{
 				addElements(frame, fl);
 				cl.show(frame.panel_content, "View All Records");
+			}
+		});
+	}
+	
+
+	
+	public static void recordPromotion_Listener(final GUI frame)
+	{
+		btnRecordPromotion.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				JComponent prompt = null;
+
+				final JComponent[] inputs = new JComponent[] {
+						new JLabel("Please enter year of promotion"), prompt };
+				String yearOfPromo = JOptionPane.showInputDialog(null, inputs,
+						"Record Promotion", JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+	}
+	
+	
+	/**
+	 * 
+	 * @param frame
+	 */
+	public static void vaEdit_Listener(final GUI frame)
+	{
+		btnViewAll_Edit.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent arg0)
+			{
+				selectedPerson = frame.list.getSelectedIndex();
+				cl.show(frame.panel_content, "Edit Record");
+	
+				frame.textField_name_edit.setText(fl.getRecord(selectedPerson).getName());
+				frame.comboBox_college_edit.setSelectedItem(fl.getRecord(selectedPerson)
+						.getCollege());
+				frame.comboBox_dept_edit.setSelectedItem(fl.getRecord(selectedPerson)
+						.getDepartment());
+	
+				if (String.valueOf(fl.getRecord(selectedPerson).getGender())
+						.equals("F"))
+					frame.rdbtnFemale_edit.setSelected(true);
+				else
+					frame.rdbtnMale_edit.setSelected(true);
+				// comboBox_rank_edit.setSelectedItem(rank[selectedPerson]);
+	
+				// comboBox_month_edit
+				// textField_year_edit
+				// comboBox_degree_edit
+				// txtInstitution_edit
+				// textArea_comments_edit
+				// textField_expCred_edit
+				// comboBox_currentRank
+			}
+		});
+	}
+	
+	/**
+	 * 
+	 * @param frame
+	 */
+	public static void edit_Listener(final GUI frame)
+	{
+		btnEditRecord.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				selectedPerson = frame.list.getSelectedIndex();
+				cl.show(frame.panel_content, "Edit Record");
+	
+				frame.textField_name_edit.setText(fl.getRecord(selectedPerson).getName());
+				frame.comboBox_college_edit.setSelectedItem(fl.getRecord(selectedPerson)
+						.getCollege());
+				frame.comboBox_dept_edit.setSelectedItem(fl.getRecord(selectedPerson)
+						.getDepartment());
+	
+				if (String.valueOf(fl.getRecord(selectedPerson).getGender())
+						.equals("F"))
+					frame.rdbtnFemale_edit.setSelected(true);
+				else
+					frame.rdbtnMale_edit.setSelected(true);
+				// comboBox_rank_edit.setSelectedItem(rank[selectedPerson]);
+	
+				// comboBox_month_edit
+				// textField_year_edit
+				// comboBox_degree_edit
+				// txtInstitution_edit
+				// textArea_comments_edit
+				// textField_expCred_edit
+				// comboBox_currentRank
+			}
+		});
+	}
+	
+	public static void editSubmit_Listener(final GUI frame)
+	{
+		btnSubmit_edit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// get fields go to handler
 			}
 		});
 	}
