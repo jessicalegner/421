@@ -148,6 +148,7 @@ public class GUI extends JFrame
 	public final JList list;
 
 	public JTextField textField_tenureGranted;
+	public JLabel lblHidden_position;
 
 	/*
 	 * These are the view one tab items that need to be public for the handlers
@@ -196,11 +197,13 @@ public class GUI extends JFrame
 					 * Listeners
 					 */
 					addRecord_Listener(frame);
+					edit_Listener(frame);
 					deleteRecord_Listener(frame);
 					searchForRecord_Listener(frame);
 					viewAllRecords_Listener(frame);
 					viewOneRecord_Listener(frame);
-					
+					vaEdit_Listener(frame);
+					editSubmit_Listener(frame);
 					back_Listener(frame);
 					
 					menuHome_Listener(frame);
@@ -240,7 +243,7 @@ public class GUI extends JFrame
 		 */
 		try
 		{
-			fl = ReadObjects.readObjects();
+			fl = ReadObjects.readObjects(arh);
 		}
 		catch (Exception e1)
 		{
@@ -373,8 +376,8 @@ public class GUI extends JFrame
 		comboBox_month.setBounds(101, 165, 73, 20);
 		content_add.add(comboBox_month);
 		comboBox_month.setModel(new DefaultComboBoxModel<String>(new String[] {
-				"January", "February", "March", "April", "May", "June", "July",
-				"August", "September", "October", "November", "December" }));
+				"1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "10", "11", "12" }));
 
 		textField_year = new JTextField();
 		textField_year.setText("2013");
@@ -682,6 +685,7 @@ public class GUI extends JFrame
 		list = new JList();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setCellRenderer(new MyCellRenderer());
+		list.setFixedCellWidth(30);
 		scrollPane.setViewportView(list);
 
 		btnViewAll_View = new JButton("View");
@@ -932,8 +936,8 @@ public class GUI extends JFrame
 		comboBox_month_edit.setBounds(100, 165, 73, 20);
 		content_edit.add(comboBox_month_edit);
 		comboBox_month_edit.setModel(new DefaultComboBoxModel(new String[] {
-				"January", "February", "March", "April", "May", "June", "July",
-				"August", "September", "October", "November", "December" }));
+				"1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "10", "11", "12" }));
 
 		textField_year_edit = new JTextField();
 		textField_year_edit.setText("2013");
@@ -1015,6 +1019,11 @@ public class GUI extends JFrame
 		textField_tenureGranted.setBounds(470, 165, 86, 20);
 		content_edit.add(textField_tenureGranted);
 		textField_tenureGranted.setColumns(10);
+		
+		lblHidden_position = new JLabel("");
+		lblHidden_position.setVisible(false);
+		lblHidden_position.setBounds(10, 379, 46, 14);
+		content_edit.add(lblHidden_position);
 
 		contentPane.add(panel_content);
 
@@ -1232,7 +1241,7 @@ public class GUI extends JFrame
 	public static void addElements(final GUI frame, FacultyList fl)
 	{
 		// first number is number of rows, second is number of columns
-		String[][] columnData = new String[fl.getSize()][4];
+		String[][] columnData = new String[fl.getSize()][7];
 		fl.sortName();
 		// dynamic setting of String[][]
 		for (int i = 0; i < fl.getSize(); i++)
@@ -1241,6 +1250,9 @@ public class GUI extends JFrame
 			columnData[i][1] = fl.getRecord(i).getDepartment();
 			columnData[i][2] = fl.getRecord(i).getCollege();
 			columnData[i][3] = fl.getRecord(i).getRank().getCurrentRank();
+			columnData[i][4] = fl.getRecord(i).getDateOfHire();
+			columnData[i][5] = fl.getRecord(i).getDegree().getDegreeLevel();
+			columnData[i][6] = fl.getRecord(i).getDegree().getInstitution();
 		}
 		frame.list.setListData(columnData);
 	}
@@ -1262,6 +1274,9 @@ public class GUI extends JFrame
 				columnData[i][1] = fl.get(i).getDepartment();
 				columnData[i][2] = fl.get(i).getCollege();
 				columnData[i][3] = fl.get(i).getRank().getCurrentRank();
+				columnData[i][4] = fl.get(i).getDateOfHire();
+				columnData[i][5] = fl.get(i).getDegree().getDegreeLevel();
+				columnData[i][6] = fl.get(i).getDegree().getInstitution();
 			}
 			frame.list.setListData(columnData);
 		}
@@ -1269,57 +1284,88 @@ public class GUI extends JFrame
 	
 	static class MyCellRenderer extends JPanel implements ListCellRenderer
 	{
-		JLabel left, middle, right, rightright;
+		JLabel one, two, three, four, five, six, seven;
 
 		MyCellRenderer()
 		{
-			setLayout(new GridLayout(1, 4));
-			left = new JLabel();
-			middle = new JLabel();
-			right = new JLabel();
-			rightright = new JLabel();
-			left.setOpaque(true);
-			middle.setOpaque(true);
-			right.setOpaque(true);
-			rightright.setOpaque(true);
-			add(left);
-			add(middle);
-			add(right);
-			add(rightright);
+			setLayout(new GridLayout(1, 7));
+			one = new JLabel();
+			two = new JLabel();
+			three = new JLabel();
+			four = new JLabel();
+			five = new JLabel();
+			six = new JLabel();
+			seven = new JLabel();
+			
+			one.setOpaque(true);
+			two.setOpaque(true);
+			three.setOpaque(true);
+			four.setOpaque(true);
+			five.setOpaque(true);
+			six.setOpaque(true);
+			seven.setOpaque(true);
+			
+			add(one);
+			add(two);
+			add(three);
+			add(four);
+			add(five);
+			add(six);
+			add(seven);
 		}
 
 		public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus)
 		{
-			String leftData = ((String[]) value)[0];
-			String middleData = ((String[]) value)[1];
-			String rightData = ((String[]) value)[2];
-			String rightrightData = ((String[]) value)[3];
-			left.setText(leftData);
-			middle.setText(middleData);
-			right.setText(rightData);
-			rightright.setText(rightrightData);
+			String oneData = ((String[]) value)[0];
+			String twoData = ((String[]) value)[1];
+			String threeData = ((String[]) value)[2];
+			String fourData = ((String[]) value)[3];
+			String fiveData = ((String[]) value)[4];
+			String sixData = ((String[]) value)[5];
+			String sevenData = ((String[]) value)[6];
+			
+			one.setText(oneData);
+			two.setText(twoData);
+			three.setText(threeData);
+			four.setText(fourData);
+			five.setText(fiveData);
+			six.setText(sixData);
+			seven.setText(sevenData);
+			
 			if (isSelected)
 			{
-				left.setBackground(list.getSelectionBackground());
-				left.setForeground(list.getSelectionForeground());
-				middle.setBackground(list.getSelectionBackground());
-				middle.setForeground(list.getSelectionForeground());
-				right.setBackground(list.getSelectionBackground());
-				right.setForeground(list.getSelectionForeground());
-				rightright.setBackground(list.getSelectionBackground());
-				rightright.setForeground(list.getSelectionForeground());
+				one.setBackground(list.getSelectionBackground());
+				one.setForeground(list.getSelectionForeground());
+				two.setBackground(list.getSelectionBackground());
+				two.setForeground(list.getSelectionForeground());
+				three.setBackground(list.getSelectionBackground());
+				three.setForeground(list.getSelectionForeground());
+				four.setBackground(list.getSelectionBackground());
+				four.setForeground(list.getSelectionForeground());
+				five.setBackground(list.getSelectionBackground());
+				five.setForeground(list.getSelectionForeground());
+				six.setBackground(list.getSelectionBackground());
+				six.setForeground(list.getSelectionForeground());
+				seven.setBackground(list.getSelectionBackground());
+				seven.setForeground(list.getSelectionForeground());
 			}
 			else
 			{
-				left.setBackground(list.getBackground());
-				left.setForeground(list.getForeground());
-				middle.setBackground(list.getBackground());
-				middle.setForeground(list.getForeground());
-				right.setBackground(list.getBackground());
-				right.setForeground(list.getForeground());
-				rightright.setBackground(list.getBackground());
-				rightright.setForeground(list.getForeground());
+				one.setBackground(list.getBackground());
+				one.setForeground(list.getForeground());
+				two.setBackground(list.getBackground());
+				two.setForeground(list.getForeground());
+				three.setBackground(list.getBackground());
+				three.setForeground(list.getForeground());
+				four.setBackground(list.getBackground());
+				four.setForeground(list.getForeground());
+				five.setBackground(list.getBackground());
+				five.setForeground(list.getForeground());
+				six.setBackground(list.getBackground());
+				six.setForeground(list.getForeground());
+				seven.setBackground(list.getBackground());
+				seven.setForeground(list.getForeground());
 			}
 			setEnabled(list.isEnabled());
 			setFont(list.getFont());
@@ -1531,8 +1577,10 @@ public class GUI extends JFrame
 		});
 	}
 	
-
-	
+	/**
+	 * Dialog to add a year of promotion to the faculty record
+	 * @param frame
+	 */
 	public static void recordPromotion_Listener(final GUI frame)
 	{
 		btnRecordPromotion.addActionListener(new ActionListener()
@@ -1549,9 +1597,9 @@ public class GUI extends JFrame
 		});
 	}
 	
-	
 	/**
-	 * 
+	 * Listener on the view all record screen to detect edit
+	 * Populates fields and takes to edit record screen
 	 * @param frame
 	 */
 	public static void vaEdit_Listener(final GUI frame)
@@ -1561,34 +1609,15 @@ public class GUI extends JFrame
 			public void actionPerformed(ActionEvent arg0)
 			{
 				selectedPerson = frame.list.getSelectedIndex();
+				erh.populate(frame, fl, selectedPerson);
 				cl.show(frame.panel_content, "Edit Record");
-	
-				frame.textField_name_edit.setText(fl.getRecord(selectedPerson).getName());
-				frame.comboBox_college_edit.setSelectedItem(fl.getRecord(selectedPerson)
-						.getCollege());
-				frame.comboBox_dept_edit.setSelectedItem(fl.getRecord(selectedPerson)
-						.getDepartment());
-	
-				if (String.valueOf(fl.getRecord(selectedPerson).getGender())
-						.equals("F"))
-					frame.rdbtnFemale_edit.setSelected(true);
-				else
-					frame.rdbtnMale_edit.setSelected(true);
-				// comboBox_rank_edit.setSelectedItem(rank[selectedPerson]);
-	
-				// comboBox_month_edit
-				// textField_year_edit
-				// comboBox_degree_edit
-				// txtInstitution_edit
-				// textArea_comments_edit
-				// textField_expCred_edit
-				// comboBox_currentRank
 			}
 		});
 	}
 	
 	/**
-	 * 
+	 * Listener on a single record to detect edit 
+	 * Populates fields and takes to edit record screen
 	 * @param frame
 	 */
 	public static void edit_Listener(final GUI frame)
@@ -1596,37 +1625,24 @@ public class GUI extends JFrame
 		btnEditRecord.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				selectedPerson = frame.list.getSelectedIndex();
+				erh.populate(frame, fl, selectedPerson);
 				cl.show(frame.panel_content, "Edit Record");
-	
-				frame.textField_name_edit.setText(fl.getRecord(selectedPerson).getName());
-				frame.comboBox_college_edit.setSelectedItem(fl.getRecord(selectedPerson)
-						.getCollege());
-				frame.comboBox_dept_edit.setSelectedItem(fl.getRecord(selectedPerson)
-						.getDepartment());
-	
-				if (String.valueOf(fl.getRecord(selectedPerson).getGender())
-						.equals("F"))
-					frame.rdbtnFemale_edit.setSelected(true);
-				else
-					frame.rdbtnMale_edit.setSelected(true);
-				// comboBox_rank_edit.setSelectedItem(rank[selectedPerson]);
-	
-				// comboBox_month_edit
-				// textField_year_edit
-				// comboBox_degree_edit
-				// txtInstitution_edit
-				// textArea_comments_edit
-				// textField_expCred_edit
-				// comboBox_currentRank
 			}
 		});
 	}
 	
+	/**
+	 * Listener on edit screen to detect finalize edit
+	 * Takes back to view all records screen
+	 * @param frame
+	 */
 	public static void editSubmit_Listener(final GUI frame)
 	{
 		btnSubmit_edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// get fields go to handler
+				erh.edit(frame, fl);
+				addElements(frame, fl);
+				cl.show(frame.panel_content, "View All Records");
 			}
 		});
 	}

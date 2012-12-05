@@ -2,9 +2,6 @@ package FIMS;
 
 import gui.GUI;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import domain.EvaluationEligibility;
 import domain.FacultyList;
 import domain.FacultyMember;
@@ -16,10 +13,7 @@ import domain.PromotionEligibility;
  */
 public class EditRecordHandler
 {
-
 	FacultyMember fm = new FacultyMember();
-	EvaluationEligibility ee = new EvaluationEligibility();
-	PromotionEligibility pe = new PromotionEligibility();
 
 	/**
 	 * Edit a record. Create objects and send them to the datastore.
@@ -30,26 +24,59 @@ public class EditRecordHandler
 	{
 		char gender = frame.rdbtnMale.isSelected() ? 'M' : frame.rdbtnFemale
 				.isSelected() ? 'F' : ' ';
-
-		Calendar dateOfHire = new GregorianCalendar(
-				Integer.parseInt(frame.textField_year.getText()),
-				frame.comboBox_month.getSelectedIndex() + 1, 01);
+		
 		// set faculty member data
-		fm.setName(frame.textField_name.getText());
+		fm.setPosition(frame.lblHidden_position.getText());
+		fm.setName(frame.textField_name_edit.getText());
 		fm.setGender(gender);
-		fm.setDepartment((String) frame.comboBox_dept.getSelectedItem());
-		fm.setCollege((String) frame.comboBox_college.getSelectedItem());
-		fm.setRank((String) frame.comboBox_rank.getSelectedItem(),
-				(String) frame.comboBox_rank.getSelectedItem());
-		fm.setDegree((String) frame.comboBox_degree.getSelectedItem(),
-				frame.txtInstitution.getText());
-		// fm.setDateOfHire(dateOfHire);
-		fm.setComments(frame.textArea_comments.getText());
-		// set promotion eligibility data
-		pe.setExperienceCredit(frame.textField_expCred_edit.getText());
-		// set evaluation eligibility data
-		ee.setYearTenureGranted(frame.textField_tenureGranted.getText());
+		fm.setDateOfHire(frame.comboBox_month_edit.getSelectedItem() + "/1/" +
+										 frame.textField_year_edit.getText());
+		fm.setDepartment((String) frame.comboBox_dept_edit.getSelectedItem());
+		fm.setCollege((String) frame.comboBox_college_edit.getSelectedItem());
+		fm.setRank((String) frame.comboBox_rank_edit.getSelectedItem(),
+				(String) frame.comboBox_rank_edit.getSelectedItem());
+		fm.setDegree((String) frame.comboBox_degree_edit.getSelectedItem(),
+				frame.txtInstitution_edit.getText());
+		fm.setComments(frame.textArea_comments_edit.getText());
+		fl.editRecord(fm);
+	}
+	
+	public void populate(GUI frame, FacultyList fl, int selectedPerson)
+	{
+		String[] date = createDate(fl.getRecord(selectedPerson).getDateOfHire());
+		String month = date[0];
+		String year = date[2];
+		
+		frame.lblHidden_position.setText(fl.getRecord(selectedPerson).getPosition());
+		frame.textField_name_edit.setText(fl.getRecord(selectedPerson).getName());
+		frame.comboBox_college_edit.setSelectedItem(fl.getRecord(selectedPerson)
+				.getCollege());
+		frame.comboBox_dept_edit.setSelectedItem(fl.getRecord(selectedPerson)
+				.getDepartment());
 
-		// db.editrecord(fm); ???
+		if (String.valueOf(fl.getRecord(selectedPerson).getGender())
+				.equals("F"))
+		{
+			frame.rdbtnFemale_edit.setSelected(true);
+		}
+		else
+		{
+			frame.rdbtnMale_edit.setSelected(true);
+		}
+		frame.comboBox_rank_edit.setSelectedItem(fl.getRecord(selectedPerson).getRank().getRankAtHire());
+		frame.comboBox_month_edit.setSelectedItem(month);
+		frame.textField_year_edit.setText(year);
+		frame.comboBox_degree_edit.setSelectedItem(fl.getRecord(selectedPerson).getDegree().getDegreeLevel());
+		frame.txtInstitution_edit.setText(fl.getRecord(selectedPerson).getDegree().getInstitution());
+		frame.textArea_comments_edit.setText(fl.getRecord(selectedPerson).getComments().get(0));
+		frame.textField_expCred_edit.setText(fl.getRecord(selectedPerson).getPromotion().getExperienceCredit());
+		frame.comboBox_currentRank.setSelectedItem(fl.getRecord(selectedPerson).getRank().getCurrentRank());
+	}
+	
+	private String[] createDate(String dateOfHire)
+	{
+		String[] dateExplode;
+		dateExplode = dateOfHire.split("/");
+		return dateExplode;
 	}
 }

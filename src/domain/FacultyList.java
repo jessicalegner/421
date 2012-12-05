@@ -37,9 +37,22 @@ public class FacultyList
 	 * @param updatedFacultyMember
 	 *          the updated record of faculty member
 	 */
-	public void updateRecord(FacultyMember updatedFacultyMember)
+	public void editRecord(FacultyMember updatedFacultyMember)
 	{
-
+		int selectedPerson = -1;
+		
+		for (FacultyMember fm : faculty)
+		{
+			if (fm.getPosition() == updatedFacultyMember.getPosition())
+			{
+				selectedPerson = faculty.indexOf(fm);
+			}
+		}
+		
+		if (selectedPerson >= 0)
+		{
+			faculty.set(selectedPerson, updatedFacultyMember);
+		}
 	}
 
 	/**

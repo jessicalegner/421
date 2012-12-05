@@ -11,12 +11,14 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import FIMS.AddRecordHandler;
+
 import domain.FacultyList;
 import domain.FacultyMember;
 
 public class ReadObjects
-{
-	public static FacultyList readObjects() throws Exception
+{	
+	public static FacultyList readObjects(AddRecordHandler arh) throws Exception
 	{
 		//
 		// An excel file name. You can create a file name with a full
@@ -82,10 +84,10 @@ public class ReadObjects
 			}
 		}
 
-		return showExcelData(sheetData);
+		return showExcelData(sheetData, arh);
 	}
 
-	private static FacultyList showExcelData(List sheetData)
+	private static FacultyList showExcelData(List sheetData, AddRecordHandler arh)
 	{
 		//
 		// Iterates the data and print it out to the console.
@@ -103,8 +105,8 @@ public class ReadObjects
 			fm.setName(cell.getRichStringCellValue().getString());
 
 			cell = (HSSFCell) list.get(2);
-			fm.setPosition(Integer
-					.parseInt(cell.getRichStringCellValue().getString()));
+			fm.setPosition(cell.getRichStringCellValue().getString());
+			arh.setHighPosNum(cell.getRichStringCellValue().getString());
 
 			cell = (HSSFCell) list.get(3);
 			fm.setGender(cell.getRichStringCellValue().getString().charAt(0));

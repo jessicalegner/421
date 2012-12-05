@@ -34,9 +34,14 @@ public class EvaluationEligibility
 	 *          the date a faculty member is hired
 	 * @return the year of the next evaluation to be conducted
 	 */
-	public int calculateEligibility(Calendar dateOfHire)
+	public void calculateEligibility(String yearOfHire)
 	{
-		return 1;
+		int twoDigitYear = Integer.parseInt(yearOfHire.substring(2, 4));
+		
+		addYearOfEvaluation(twoDigitYear + "-" + (twoDigitYear + 1));
+		addYearOfEvaluation((twoDigitYear + 1) + "-" + (twoDigitYear + 2));
+		addYearOfEvaluation((twoDigitYear + 3) + "-" + (twoDigitYear + 4));
+		addYearOfEvaluation((twoDigitYear + 4) + "-" + (twoDigitYear + 5));
 	}
 
 	/**

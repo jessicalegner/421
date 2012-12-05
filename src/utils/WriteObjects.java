@@ -50,7 +50,7 @@ public class WriteObjects
 				myCell.setCellValue(fm.getName());
 				
 				myCell = myRow.createCell(currCell++);
-				myCell.setCellValue(Double.toString(fm.getPosition()));
+				myCell.setCellValue(fm.getPosition());
 				
 				myCell = myRow.createCell(currCell++);
 				myCell.setCellValue(String.valueOf(fm.getGender()));

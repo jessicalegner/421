@@ -28,7 +28,7 @@ public class ViewOneRecordHandler
 				.getRankAtHire());
 		frame.tab_gen_degree.setText(fl.getRecord(selectedPerson).getDegree()
 				.getDegreeLevel());
-		frame.tab_gen_comments.setText("Fix this");
+		frame.tab_gen_comments.setText(fl.getRecord(selectedPerson).getComments().get(1));
 		frame.tab_gen_gender.setText(String.valueOf(fl.getRecord(selectedPerson)
 				.getGender()));
 		frame.tab_gen_institution.setText(fl.getRecord(selectedPerson).getDegree()

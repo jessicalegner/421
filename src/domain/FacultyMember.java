@@ -11,7 +11,7 @@ import java.util.Comparator;
 public class FacultyMember
 {
 	String name;
-	int position;
+	String position;
 	char gender;
 	String department;
 	String college;
@@ -29,8 +29,8 @@ public class FacultyMember
 	public FacultyMember()
 	{
 		name = "";
-		position = 0;
-		gender = 'A';
+		position = "";
+		gender = 'X';
 		department = "";
 		college = "";
 		dateOfHire = "";
@@ -62,7 +62,7 @@ public class FacultyMember
 	 * 
 	 * @param position
 	 */
-	public void setPosition(int position)
+	public void setPosition(String position)
 	{
 		this.position = position;
 	}
@@ -72,7 +72,7 @@ public class FacultyMember
 	 * 
 	 * @return position
 	 */
-	public int getPosition()
+	public String getPosition()
 	{
 		return position;
 	}
@@ -224,6 +224,15 @@ public class FacultyMember
 		this.evaluation.addYearOfEvaluation(yearOfEvaluation);
 	}
 
+	/**
+	 * 
+	 * @param year
+	 */
+	public void setNewEvals(String year)
+	{
+		this.evaluation.calculateEligibility(year);
+	}
+	
 	/**
 	 * Method to get evaluation information
 	 * 
