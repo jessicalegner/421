@@ -9,14 +9,14 @@ import gui.GUI;
  */
 public class DeleteRecordHandler
 {
-	/**
-	 * Delete a record according to selected index.
-	 * 
-	 * @param frame
-	 */
-	public void delete(GUI frame, FacultyList fl)
-	{
-		int selectedPerson = frame.list.getSelectedIndex();
-		fl.deleteRecord(selectedPerson);
-	}
+  /**
+   * Delete a record according to selected index.
+   * 
+   * @param frame
+   */
+  public void delete(GUI frame, FacultyList fl)
+  {
+    int selectedPerson = frame.list.getSelectedIndex();
+    fl.deleteRecord(selectedPerson);
+  }
 }
